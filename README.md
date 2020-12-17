@@ -6,10 +6,10 @@ Markup generator for Swift.
 
 ```swift
 MarkUp()
-    .html[inside: MarkUp()
-            .body[inside: MarkUp()
-                    .table[inside: MarkUp()
-                            .tr[inside: MarkUp()
+    .html[MarkUp()
+            .body[MarkUp()
+                    .table[MarkUp()
+                            .tr[MarkUp()
                                     .td[character: "一行目"]
                                     .td[character: "二行目"]
                             ]
@@ -37,7 +37,7 @@ MarkUp()
 
 ```swift
 MarkUp(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
-    .レシピ[inside: MarkUp()
+    .レシピ[MarkUp()
                 .手順[character: "全ての材料を一緒にして混ぜます。"]
                 .手順[character: "オーブンに入れて温度を180℃にして30分間焼きます。"]
     ]
@@ -57,10 +57,10 @@ MarkUp(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
 
 ```swift
 MarkUp()
-    .html[inside: MarkUp()
-            .body[inside: MarkUp()
-                    .table[attributes: ["border" : "1", "disable": nil]][inside: MarkUp()
-                                                                            .tr[inside: MarkUp()
+    .html[MarkUp()
+            .body[MarkUp()
+                    .table[attributes: ["border" : "1", "disable": nil]][MarkUp()
+                                                                            .tr[MarkUp()
                                                                                     .td[character: "一行目"]
                                                                                     .td[character: "二行目"]
                                                                             ]
@@ -89,8 +89,8 @@ MarkUp()
 
 ```swift
 MarkUp()
-    .html[inside: MarkUp()
-            .body[inside: MarkUp()
+    .html[MarkUp()
+            .body[MarkUp()
                     .br[addEndTag: false]
                     .br[addEndTag: false]
                     .br[addEndTag: false]
