@@ -68,22 +68,18 @@ public class MarkUp {
     
     public func generate() -> String {
         queue.append(self)
-        var str = ""
-        queue.forEach { (html) in
-            switch html.inside {
+        return queue.reduce("") { (result, markUp) -> String in
+            switch markUp.inside {
             case .root(let docType):
-                str += docType
+                return result + docType
             case .markUp,.character:
                 if addEndTag {
-                    str += String(format: "<%@%@>%@</%@>", html.tag, html.attributes ?? "", html.inside.generate(), html.tag)
+                    return result + String(format: "<%@%@>%@</%@>", markUp.tag, markUp.attributes ?? "", markUp.inside.generate(), markUp.tag)
                 } else {
-                    str += String(format: "<%@%@>", html.tag, html.attributes ?? "")
+                    return result +  String(format: "<%@%@>", markUp.tag, markUp.attributes ?? "")
                 }
-                
             }
-            
         }
-        return str
     }
 }
 
