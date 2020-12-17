@@ -10,7 +10,7 @@ import Foundation
 @dynamicMemberLookup
 public class MarkUp {
     let tag: String
-    var attributes: String?
+    var attributes: [String: String?]?
     var addEndTag = true
     var inside: Inside
     var queue:[MarkUp]
@@ -21,15 +21,7 @@ public class MarkUp {
     }
     
     public subscript(attributes attributes: [String: String?]) -> MarkUp {
-        self.attributes = attributes.reduce("", { (result, arg1) -> String in
-            let (key, value) = arg1
-            if let value = value {
-                return result + String(format: #" %@="%@""#, key, value)
-            } else {
-                return result + String(format: #" %@"#, key)
-            }
-        })
-        
+        self.attributes = attributes
         return self
     }
     
@@ -62,8 +54,8 @@ public class MarkUp {
     
     private init(tag: String, queue:[MarkUp]) {
         self.tag = tag
-        self.queue = queue
         self.inside = .character("")
+        self.queue = queue
     }
     
     public func generate() -> String {
@@ -74,12 +66,25 @@ public class MarkUp {
                 return result + docType
             case .markUp,.character:
                 if addEndTag {
-                    return result + String(format: "<%@%@>%@</%@>", markUp.tag, markUp.attributes ?? "", markUp.inside.generate(), markUp.tag)
+                    return result + String(format: "<%@%@>%@</%@>", markUp.tag, markUp.attributes?.attributeString ?? "", markUp.inside.generate(), markUp.tag)
                 } else {
-                    return result +  String(format: "<%@%@>", markUp.tag, markUp.attributes ?? "")
+                    return result +  String(format: "<%@%@>", markUp.tag, markUp.attributes?.attributeString ?? "")
                 }
             }
         }
+    }
+}
+
+private extension Dictionary where Key == String, Value == String? {
+    var attributeString: String {
+        reduce("", { (result, arg1) -> String in
+            let (key, value) = arg1
+            if let value = value {
+                return result + String(format: #" %@="%@""#, key, value)
+            } else {
+                return result + String(format: #" %@"#, key)
+            }
+        })
     }
 }
 
