@@ -1,15 +1,15 @@
-# MarkUpDynamic
+# MarkUp
 
 Markup generator for Swift.
 
 ## BASIC HTML
 
 ```swift
-MarkUpDynamic()
-    .html[inside: MarkUpDynamic()
-            .body[inside: MarkUpDynamic()
-                    .table[inside: MarkUpDynamic()
-                            .tr[inside: MarkUpDynamic()
+MarkUp()
+    .html[inside: MarkUp()
+            .body[inside: MarkUp()
+                    .table[inside: MarkUp()
+                            .tr[inside: MarkUp()
                                     .td[character: "一行目"]
                                     .td[character: "二行目"]
                             ]
@@ -36,8 +36,8 @@ MarkUpDynamic()
 ## BASIC XML
 
 ```swift
-MarkUpDynamic(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
-    .レシピ[inside: MarkUpDynamic()
+MarkUp(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
+    .レシピ[inside: MarkUp()
                 .手順[character: "全ての材料を一緒にして混ぜます。"]
                 .手順[character: "オーブンに入れて温度を180℃にして30分間焼きます。"]
     ]
@@ -56,11 +56,11 @@ MarkUpDynamic(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
 ## Attribute
 
 ```swift
-MarkUpDynamic()
-    .html[inside: MarkUpDynamic()
-            .body[inside: MarkUpDynamic()
-                    .table[attributes: ["border" : "1", "disable": nil]][inside: MarkUpDynamic()
-                                                                            .tr[inside: MarkUpDynamic()
+MarkUp()
+    .html[inside: MarkUp()
+            .body[inside: MarkUp()
+                    .table[attributes: ["border" : "1", "disable": nil]][inside: MarkUp()
+                                                                            .tr[inside: MarkUp()
                                                                                     .td[character: "一行目"]
                                                                                     .td[character: "二行目"]
                                                                             ]
@@ -88,9 +88,9 @@ MarkUpDynamic()
 ## Void element
 
 ```swift
-MarkUpDynamic()
-    .html[inside: MarkUpDynamic()
-            .body[inside: MarkUpDynamic()
+MarkUp()
+    .html[inside: MarkUp()
+            .body[inside: MarkUp()
                     .br[addEndTag: false]
                     .br[addEndTag: false]
                     .br[addEndTag: false]
