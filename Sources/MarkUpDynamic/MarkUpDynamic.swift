@@ -15,7 +15,7 @@ public class MarkUpDynamic {
     var inside: Inside
     var queue:[MarkUpDynamic]
     
-    public subscript(inside inside: MarkUpDynamic) -> MarkUpDynamic {
+    public subscript(_ inside: MarkUpDynamic) -> MarkUpDynamic {
         self.inside = .markUp(inside)
         return self
     }

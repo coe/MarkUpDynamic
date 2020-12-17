@@ -4,10 +4,10 @@ import XCTest
 final class MarkUpDynamicTests: XCTestCase {
     func testExample() {
         XCTAssertEqual(MarkUpDynamic()
-                        .html[inside: MarkUpDynamic()
-                                .body[inside: MarkUpDynamic()
-                                        .table[inside: MarkUpDynamic()
-                                                .tr[inside: MarkUpDynamic()
+                        .html[MarkUpDynamic()
+                                .body[MarkUpDynamic()
+                                        .table[MarkUpDynamic()
+                                                .tr[MarkUpDynamic()
                                                         .td[character: "一行目"]
                                                         .td[character: "二行目"]
                                                 ]
@@ -18,10 +18,10 @@ final class MarkUpDynamicTests: XCTestCase {
     
     func testAttributes() {
         XCTAssertEqual(MarkUpDynamic()
-                        .html[inside: MarkUpDynamic()
-                                .body[inside: MarkUpDynamic()
-                                        .table[attributes: ["border" : "1"]][inside: MarkUpDynamic()
-                                                                                .tr[inside: MarkUpDynamic()
+                        .html[MarkUpDynamic()
+                                .body[MarkUpDynamic()
+                                        .table[attributes: ["border" : "1"]][MarkUpDynamic()
+                                                                                .tr[MarkUpDynamic()
                                                                                         .td[character: "一行目"]
                                                                                         .td[character: "二行目"]
                                                                                 ]
@@ -33,8 +33,8 @@ final class MarkUpDynamicTests: XCTestCase {
     
     func testAddEndTag() {
         XCTAssertEqual(MarkUpDynamic()
-                        .html[inside: MarkUpDynamic()
-                                .body[inside: MarkUpDynamic()
+                        .html[ MarkUpDynamic()
+                                .body[ MarkUpDynamic()
                                         .br[addEndTag: false]
                                         .br[addEndTag: false]
                                         .br[addEndTag: false]
@@ -45,9 +45,9 @@ final class MarkUpDynamicTests: XCTestCase {
     
     func testXml() {
         XCTAssertEqual(MarkUpDynamic(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
-                        .レシピ[inside: MarkUpDynamic()
-                                    .手順[character: "全ての材料を一緒にして混ぜます。"]
-                                    .手順[character: "オーブンに入れて温度を180℃にして30分間焼きます。"]
+                        .レシピ[ MarkUpDynamic()
+                                        .手順[character: "全ての材料を一緒にして混ぜます。"]
+                                        .手順[character: "オーブンに入れて温度を180℃にして30分間焼きます。"]
                         ]
                         .generate(), #"<?xml version="1.0" encoding="UTF-8"?><レシピ><手順>全ての材料を一緒にして混ぜます。</手順><手順>オーブンに入れて温度を180℃にして30分間焼きます。</手順></レシピ>"#)
     }
