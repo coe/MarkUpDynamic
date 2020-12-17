@@ -1,5 +1,5 @@
 import XCTest
-@testable import MarkUpDynamic
+import MarkUpDynamic
 
 final class MarkUpDynamicTests: XCTestCase {
     func testExample() {
