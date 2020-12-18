@@ -66,9 +66,9 @@ public class MarkUp {
                 return result + docType
             case .markUp,.character:
                 if addEndTag {
-                    return result + String(format: "<%@%@>%@</%@>", markUp.tag, markUp.attributes?.attributeString ?? "", markUp.inside.generate(), markUp.tag)
+                    return result +  "<\(markUp.tag)\(markUp.attributes?.attributeString ?? "")>\(markUp.inside.generate())</\(markUp.tag)>"
                 } else {
-                    return result +  String(format: "<%@%@>", markUp.tag, markUp.attributes?.attributeString ?? "")
+                    return result +  "<\(markUp.tag)\(markUp.attributes?.attributeString ?? "")>"
                 }
             }
         }
@@ -80,9 +80,9 @@ private extension Dictionary where Key == String, Value == String? {
         reduce("", { (result, arg1) -> String in
             let (key, value) = arg1
             if let value = value {
-                return result + String(format: #" %@="%@""#, key, value)
+                return result + " \(key)=\"\(value)\""
             } else {
-                return result + String(format: #" %@"#, key)
+                return result + " \(key)"
             }
         })
     }
