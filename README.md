@@ -1,6 +1,6 @@
 # MarkUpDynamic
 
-Markup generator for Swift.
+Markup generator for Swift that like a DSL.
 
 ## BASIC HTML
 
