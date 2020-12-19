@@ -70,7 +70,7 @@ MarkUp()
     .generate()
 ```
 
-or
+Other way
 
 ```swift
 MarkUp()
@@ -124,3 +124,30 @@ MarkUp()
 </html>
 ```
 
+## vapor routes
+
+```swift
+import Vapor
+import MarkUpDynamic
+
+func routes(_ app: Application) throws {
+    app.get { req in
+        return View(data: ByteBuffer.init(string: MarkUp(doctype: #"<!DOCTYPE html>"#)
+                                            .html[MarkUp()
+                                                    .head[MarkUp()
+                                                            .meta[attributes: ["charset" : "UTF-8"]][addEndTag: false]
+                                                            .title[character: "HTML"]
+                                                    ]
+                                                    .body[MarkUp()
+                                                            .p[character: "Body"]
+                                                    ]
+                                            ][attributes: ["lang" : "ja"]]
+                                            .generate())
+        )
+    }
+    
+    app.get("hello") { req -> String in
+        return "Hello, world!"
+    }
+}
+```
