@@ -36,8 +36,12 @@ public class MarkUp {
     }
     
     public subscript(dynamicMember member: String) -> MarkUp {
+        tagName(member)
+    }
+    
+    public func tagName(_ tagName: String) -> MarkUp {
         queue.append(self)
-        return MarkUp(tag: member,queue: queue)
+        return MarkUp(tag: tagName,queue: queue)
     }
     
     public init(doctype:String) {
