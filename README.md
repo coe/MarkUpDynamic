@@ -1,4 +1,4 @@
-# MarkUp
+# MarkUpDynamic
 
 Markup generator for Swift.
 
@@ -65,6 +65,23 @@ MarkUp()
                                                                                     .td[character: "二行目"]
                                                                             ]
                     ]
+            ]
+    ]
+    .generate()
+```
+
+or
+
+```swift
+MarkUp()
+    .html[MarkUp()
+            .body[MarkUp()
+                    .table[MarkUp()
+                            .tr[MarkUp()
+                                    .td[character: "一行目"]
+                                    .td[character: "二行目"]
+                            ]
+                    ][attributes: ["border" : "1", "disable": nil]]
             ]
     ]
     .generate()
