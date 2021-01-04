@@ -35,9 +35,9 @@ final class MarkUpDynamicTests: XCTestCase {
         XCTAssertEqual(MarkUp()
                         .html[MarkUp()
                                 .body[MarkUp()
-                                        .br[addEndTag: false]
-                                        .br[addEndTag: false]
-                                        .br[addEndTag: false]
+                                        .br.doNotSpecifyEndTag()
+                                        .br.doNotSpecifyEndTag()
+                                        .br.doNotSpecifyEndTag()
                                 ]
                         ]
                         .generate(), "<html><body><br><br><br></body></html>")

@@ -30,8 +30,8 @@ public class MarkUp {
         return self
     }
     
-    public subscript(addEndTag addEndTag: Bool) -> MarkUp {
-        self.addEndTag = addEndTag
+    public func doNotSpecifyEndTag() -> MarkUp {
+        self.addEndTag = false
         return self
     }
     
