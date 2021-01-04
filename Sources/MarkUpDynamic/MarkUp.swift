@@ -69,7 +69,7 @@ public class MarkUp {
             case .root(let docType):
                 return result + docType
             case .markUp,.character:
-                if addEndTag {
+                if markUp.addEndTag {
                     return result +  "<\(markUp.tag)\(markUp.attributes?.attributeString ?? "")>\(markUp.inside.generate())</\(markUp.tag)>"
                 } else {
                     return result +  "<\(markUp.tag)\(markUp.attributes?.attributeString ?? "")>"

@@ -66,6 +66,20 @@ final class MarkUpDynamicTests: XCTestCase {
                         .generate(), #"<?xml version="1.0" encoding="UTF-8"?><レシピ><手順>全ての材料を一緒にして混ぜます。</手順><手順>オーブンに入れて温度を180℃にして30分間焼きます。</手順></レシピ>"#)
     }
     
+    func testHtml() {
+        XCTAssertEqual(MarkUp(doctype: #"<!DOCTYPE html>"#)
+                        .html[MarkUp()
+                                .head[MarkUp()
+                                        .meta.doNotSpecifyEndTag()[attributes: ["charset" : "UTF-8"]]
+                                        .title[character: "HTML5サンプル"]
+                                ]
+                                .body[MarkUp()
+                                        .p[character: "HTML5で作成しました！"]
+                                ]
+                        ][attributes: ["lang":"ja"]]
+                        .generate(), #"<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>HTML5サンプル</title></head><body><p>HTML5で作成しました！</p></body></html>"#)
+    }
+    
     static var allTests = [
         ("testExample", testExample),
         ("testAttributes", testAttributes),

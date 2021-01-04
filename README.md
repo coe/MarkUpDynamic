@@ -108,9 +108,9 @@ MarkUp()
 MarkUp()
     .html[MarkUp()
             .body[MarkUp()
-                    .br[addEndTag: false]
-                    .br[addEndTag: false]
-                    .br[addEndTag: false]
+                    .br.doNotSpecifyEndTag()
+                    .br.doNotSpecifyEndTag()
+                    .br.doNotSpecifyEndTag()
             ]
     ]
     .generate()
@@ -135,7 +135,7 @@ func routes(_ app: Application) throws {
         return View(data: ByteBuffer.init(string: MarkUp(doctype: #"<!DOCTYPE html>"#)
                                             .html[MarkUp()
                                                     .head[MarkUp()
-                                                            .meta[attributes: ["charset" : "UTF-8"]][addEndTag: false]
+                                                            .meta[attributes: ["charset" : "UTF-8"]].doNotSpecifyEndTag()
                                                             .title[character: "HTML"]
                                                     ]
                                                     .body[MarkUp()
