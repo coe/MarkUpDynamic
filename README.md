@@ -10,8 +10,8 @@ MarkUp()
             .body[MarkUp()
                     .table[MarkUp()
                             .tr[MarkUp()
-                                    .td[character: "一行目"]
-                                    .td[character: "二行目"]
+                                    .td[character: "one"]
+                                    .td[character: "two"]
                             ]
                     ]
             ]
@@ -24,8 +24,8 @@ MarkUp()
 <body>
     <table>
         <tr>
-            <td>一行目</td>
-            <td>二行目</td>
+            <td>one</td>
+            <td>two</td>
         </tr>
     </table>
 </body>
@@ -61,8 +61,8 @@ MarkUp()
             .body[MarkUp()
                     .table[attributes: ["border" : "1", "disable": nil]][MarkUp()
                                                                             .tr[MarkUp()
-                                                                                    .td[character: "一行目"]
-                                                                                    .td[character: "二行目"]
+                                                                                    .td[character: "one"]
+                                                                                    .td[character: "two"]
                                                                             ]
                     ]
             ]
@@ -78,8 +78,8 @@ MarkUp()
             .body[MarkUp()
                     .table[MarkUp()
                             .tr[MarkUp()
-                                    .td[character: "一行目"]
-                                    .td[character: "二行目"]
+                                    .td[character: "one"]
+                                    .td[character: "two"]
                             ]
                     ][attributes: ["border" : "1", "disable": nil]]
             ]
@@ -93,8 +93,8 @@ MarkUp()
 <body>
     <table border="1" disable>
         <tr>
-            <td>一行目</td>
-            <td>二行目</td>
+            <td>one</td>
+            <td>two</td>
         </tr>
     </table>
 </body>
@@ -102,7 +102,7 @@ MarkUp()
 </html>
 ```
 
-## Void element
+## Void element(No end tag)
 
 ```swift
 MarkUp()
@@ -150,4 +150,17 @@ func routes(_ app: Application) throws {
         return "Hello, world!"
     }
 }
+```
+
+```
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML</title>
+</head>
+<body>
+  <p>Body</p>
+</body>
+</html>
 ```

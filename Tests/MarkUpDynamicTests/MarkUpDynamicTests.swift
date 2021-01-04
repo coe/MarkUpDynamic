@@ -19,14 +19,14 @@ final class MarkUpDynamicTests: XCTestCase {
     func testTagName() {
         XCTAssertEqual(MarkUp()
                         .tagName("html")[MarkUp()
-                                .tagName("body")[MarkUp()
-                                        .tagName("table")[MarkUp()
-                                                .tagName("tr")[MarkUp()
-                                                                .tagName("td")[character: "一行目"]
-                                                        .td[character: "二行目"]
-                                                ]
-                                        ]
-                                ]
+                                            .tagName("body")[MarkUp()
+                                                                .tagName("table")[MarkUp()
+                                                                                    .tagName("tr")[MarkUp()
+                                                                                                    .tagName("td")[character: "一行目"]
+                                                                                                    .td[character: "二行目"]
+                                                                                    ]
+                                                                ]
+                                            ]
                         ].generate(), "<html><body><table><tr><td>一行目</td><td>二行目</td></tr></table></body></html>")
     }
     
@@ -70,14 +70,14 @@ final class MarkUpDynamicTests: XCTestCase {
         XCTAssertEqual(MarkUp(doctype: #"<!DOCTYPE html>"#)
                         .html[MarkUp()
                                 .head[MarkUp()
-                                        .meta.doNotSpecifyEndTag()[attributes: ["charset" : "UTF-8"]]
-                                        .title[character: "HTML5サンプル"]
+                                        .meta[attributes: ["charset" : "UTF-8"]].doNotSpecifyEndTag()
+                                        .title[character: "HTML"]
                                 ]
                                 .body[MarkUp()
-                                        .p[character: "HTML5で作成しました！"]
+                                        .p[character: "Body"]
                                 ]
-                        ][attributes: ["lang":"ja"]]
-                        .generate(), #"<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>HTML5サンプル</title></head><body><p>HTML5で作成しました！</p></body></html>"#)
+                        ][attributes: ["lang" : "ja"]]
+                        .generate(), #"<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>HTML</title></head><body><p>Body</p></body></html>"#)
     }
     
     static var allTests = [
