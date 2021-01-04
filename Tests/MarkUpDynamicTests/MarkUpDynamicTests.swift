@@ -16,6 +16,20 @@ final class MarkUpDynamicTests: XCTestCase {
                         ].generate(), "<html><body><table><tr><td>一行目</td><td>二行目</td></tr></table></body></html>")
     }
     
+    func testTagName() {
+        XCTAssertEqual(MarkUp()
+                        .tagName("html")[MarkUp()
+                                .tagName("body")[MarkUp()
+                                        .tagName("table")[MarkUp()
+                                                .tagName("tr")[MarkUp()
+                                                                .tagName("td")[character: "一行目"]
+                                                        .td[character: "二行目"]
+                                                ]
+                                        ]
+                                ]
+                        ].generate(), "<html><body><table><tr><td>一行目</td><td>二行目</td></tr></table></body></html>")
+    }
+    
     func testAttributes() {
         XCTAssertEqual(MarkUp()
                         .html[MarkUp()
@@ -57,6 +71,5 @@ final class MarkUpDynamicTests: XCTestCase {
         ("testAttributes", testAttributes),
         ("testAddEndTag", testAddEndTag),
         ("testXml", testXml),
-        
     ]
 }

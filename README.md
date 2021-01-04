@@ -1,6 +1,6 @@
-# MarkUp
+# MarkUpDynamic
 
-Markup generator for Swift.
+Markup generator for Swift that like a DSL.
 
 ## BASIC HTML
 
@@ -70,6 +70,23 @@ MarkUp()
     .generate()
 ```
 
+Other way
+
+```swift
+MarkUp()
+    .html[MarkUp()
+            .body[MarkUp()
+                    .table[MarkUp()
+                            .tr[MarkUp()
+                                    .td[character: "一行目"]
+                                    .td[character: "二行目"]
+                            ]
+                    ][attributes: ["border" : "1", "disable": nil]]
+            ]
+    ]
+    .generate()
+```
+
 ```html
 <html>
 
@@ -107,3 +124,30 @@ MarkUp()
 </html>
 ```
 
+## vapor routes
+
+```swift
+import Vapor
+import MarkUpDynamic
+
+func routes(_ app: Application) throws {
+    app.get { req in
+        return View(data: ByteBuffer.init(string: MarkUp(doctype: #"<!DOCTYPE html>"#)
+                                            .html[MarkUp()
+                                                    .head[MarkUp()
+                                                            .meta[attributes: ["charset" : "UTF-8"]][addEndTag: false]
+                                                            .title[character: "HTML"]
+                                                    ]
+                                                    .body[MarkUp()
+                                                            .p[character: "Body"]
+                                                    ]
+                                            ][attributes: ["lang" : "ja"]]
+                                            .generate())
+        )
+    }
+    
+    app.get("hello") { req -> String in
+        return "Hello, world!"
+    }
+}
+```
