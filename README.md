@@ -5,162 +5,140 @@ Markup generator for Swift that like a DSL.
 ## BASIC HTML
 
 ```swift
-MarkUp()
-    .html[MarkUp()
-            .body[MarkUp()
-                    .table[MarkUp()
-                            .tr[MarkUp()
-                                    .td[character: "one"]
-                                    .td[character: "two"]
-                            ]
-                    ]
-            ]
-    ].generate()
+let m = MarkUp()
+
+let htmlString = m.html.children {
+    m.head.children {
+        m.meta(charset: "UTF-8").doNotSpecifyEndTag()
+        m.meta(name: "description",
+               content: "Free Web tutorials").doNotSpecifyEndTag()
+        m.meta(name: "keywords",
+               content: "HTML, CSS, JavaScript").doNotSpecifyEndTag()
+        m.meta(name: "author",
+               content: "John Doe").doNotSpecifyEndTag()
+    }
+    m.body.children {
+        m.p.children {
+            "All meta information goes inside the head section."
+        }
+    }
+}
+.toString()
 ```
 
 ```html
 <html>
-
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Free Web tutorials">
+  <meta name="keywords" content="HTML, CSS, JavaScript">
+  <meta name="author" content="John Doe">
+</head>
 <body>
-    <table>
-        <tr>
-            <td>one</td>
-            <td>two</td>
-        </tr>
-    </table>
+  <p>All meta information goes inside the head section.</p>
 </body>
+</html>
+```
 
+## DOCTYPE HTML
+
+```swift
+let m = MarkUp()
+let htmlString = m[dynamicMember: "!DOCTYPE"](html: nil).doNotSpecifyEndTag().children {
+    m.html.children {
+        m.head.children {
+            m.meta(charset: "UTF-8").doNotSpecifyEndTag()
+            m.meta(name: "description",
+                   content: "Free Web tutorials").doNotSpecifyEndTag()
+            m.meta(name: "keywords",
+                   content: "HTML, CSS, JavaScript").doNotSpecifyEndTag()
+            m.meta(name: "author",
+                   content: "John Doe").doNotSpecifyEndTag()
+        }
+        m.body.children {
+            m.p.children {
+                "All meta information goes inside the head section."
+            }
+        }
+    }
+}
+.toString()
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Free Web tutorials">
+  <meta name="keywords" content="HTML, CSS, JavaScript">
+  <meta name="author" content="John Doe">
+</head>
+<body>
+  <p>All meta information goes inside the head section.</p>
+</body>
 </html>
 ```
 
 ## BASIC XML
 
 ```swift
-MarkUp(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
-    .レシピ[MarkUp()
-                .手順[character: "全ての材料を一緒にして混ぜます。"]
-                .手順[character: "オーブンに入れて温度を180℃にして30分間焼きます。"]
-    ]
-    .generate()
+let m = MarkUp()
+
+let htmlString = m.書籍目録.children {
+    m.書名.children {
+        "XML入門"
+    }
+    m.著者.children {
+        "筒井"
+    }
+    m.書名.children {
+        "続・XML入門"
+    }
+    m.著者.children {
+        "小松"
+    }
+}
+.toString()
 ```
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<レシピ>
-    <手順>全ての材料を一緒にして混ぜます。</手順>
-    <手順>オーブンに入れて温度を180℃にして30分間焼きます。</手順>
-</レシピ>
+<書籍目録>
+  <書名>XML入門</書名>
+  <著者>筒井</著者>
+  <書名>続・XML入門</書名>
+  <著者>小松</著者>
+</書籍目録>
+```
+
+## XML declaration
+
+```swift
+let m = MarkUp()
+
+let htmlString = m[dynamicMember: "?xml"](version: "1.0",
+                                          encoding: "UTF-8").doNotSpecifyEndTag(instead: "?").children {
+                                            m.書籍(出版日: "2007-10-31").children {
+                                                "これは書籍です.... "
+                                            }
+                                          }
+    .toString()
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?><書籍 出版日="2007-10-31">これは書籍です.... </書籍>
 ```
 
 
-## Attribute
+## Hyphened-Attribute
+Use dynamicallyCall.
 
 ```swift
-MarkUp()
-    .html[MarkUp()
-            .body[MarkUp()
-                    .table[attributes: ["border" : "1", "disable": nil]][MarkUp()
-                                                                            .tr[MarkUp()
-                                                                                    .td[character: "one"]
-                                                                                    .td[character: "two"]
-                                                                            ]
-                    ]
-            ]
-    ]
-    .generate()
-```
+let m = MarkUp()
 
-Other way
-
-```swift
-MarkUp()
-    .html[MarkUp()
-            .body[MarkUp()
-                    .table[MarkUp()
-                            .tr[MarkUp()
-                                    .td[character: "one"]
-                                    .td[character: "two"]
-                            ]
-                    ][attributes: ["border" : "1", "disable": nil]]
-            ]
-    ]
-    .generate()
+let htmlString = m.form.dynamicallyCall(withKeywordArguments: ["accept-charset": "UTF-8"]).toString()
 ```
 
 ```html
-<html>
-
-<body>
-    <table border="1" disable>
-        <tr>
-            <td>one</td>
-            <td>two</td>
-        </tr>
-    </table>
-</body>
-
-</html>
-```
-
-## Void element(No end tag)
-
-```swift
-MarkUp()
-    .html[MarkUp()
-            .body[MarkUp()
-                    .br.doNotSpecifyEndTag()
-                    .br.doNotSpecifyEndTag()
-                    .br.doNotSpecifyEndTag()
-            ]
-    ]
-    .generate()
-```
-
-```html
-<html>
-
-<body><br><br><br></body>
-
-</html>
-```
-
-## vapor routes
-
-```swift
-import Vapor
-import MarkUpDynamic
-
-func routes(_ app: Application) throws {
-    app.get { req in
-        return View(data: ByteBuffer.init(string: MarkUp(doctype: #"<!DOCTYPE html>"#)
-                                            .html[MarkUp()
-                                                    .head[MarkUp()
-                                                            .meta[attributes: ["charset" : "UTF-8"]].doNotSpecifyEndTag()
-                                                            .title[character: "HTML"]
-                                                    ]
-                                                    .body[MarkUp()
-                                                            .p[character: "Body"]
-                                                    ]
-                                            ][attributes: ["lang" : "ja"]]
-                                            .generate())
-        )
-    }
-    
-    app.get("hello") { req -> String in
-        return "Hello, world!"
-    }
-}
-```
-
-```
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>HTML</title>
-</head>
-<body>
-  <p>Body</p>
-</body>
-</html>
+<form accept-charset="UTF-8"></form>
 ```
