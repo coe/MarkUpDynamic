@@ -2,88 +2,89 @@ import XCTest
 import MarkUpDynamic
 
 final class MarkUpDynamicTests: XCTestCase {
-    func testExample() {
-        XCTAssertEqual(MarkUp()
-                        .html[MarkUp()
-                                .body[MarkUp()
-                                        .table[MarkUp()
-                                                .tr[MarkUp()
-                                                        .td[character: "一行目"]
-                                                        .td[character: "二行目"]
-                                                ]
-                                        ]
-                                ]
-                        ].generate(), "<html><body><table><tr><td>一行目</td><td>二行目</td></tr></table></body></html>")
-    }
-    
-    func testTagName() {
-        XCTAssertEqual(MarkUp()
-                        .tagName("html")[MarkUp()
-                                            .tagName("body")[MarkUp()
-                                                                .tagName("table")[MarkUp()
-                                                                                    .tagName("tr")[MarkUp()
-                                                                                                    .tagName("td")[character: "一行目"]
-                                                                                                    .td[character: "二行目"]
-                                                                                    ]
-                                                                ]
-                                            ]
-                        ].generate(), "<html><body><table><tr><td>一行目</td><td>二行目</td></tr></table></body></html>")
-    }
-    
-    func testAttributes() {
-        XCTAssertEqual(MarkUp()
-                        .html[MarkUp()
-                                .body[MarkUp()
-                                        .table[MarkUp()
-                                                .tr[MarkUp()
-                                                        .td[character: "一行目"]
-                                                        .td[character: "二行目"]
-                                                ]
-                                        ][attributes: ["border" : "1"]]
-                                ]
-                        ]
-                        .generate(), "<html><body><table border=\"1\"><tr><td>一行目</td><td>二行目</td></tr></table></body></html>")
-    }
-    
-    func testAddEndTag() {
-        XCTAssertEqual(MarkUp()
-                        .html[MarkUp()
-                                .body[MarkUp()
-                                        .br.doNotSpecifyEndTag()
-                                        .br.doNotSpecifyEndTag()
-                                        .br.doNotSpecifyEndTag()
-                                ]
-                        ]
-                        .generate(), "<html><body><br><br><br></body></html>")
-    }
-    
-    func testXml() {
-        XCTAssertEqual(MarkUp(doctype: #"<?xml version="1.0" encoding="UTF-8"?>"#)
-                        .レシピ[MarkUp()
-                                    .手順[character: "全ての材料を一緒にして混ぜます。"]
-                                    .手順[character: "オーブンに入れて温度を180℃にして30分間焼きます。"]
-                        ]
-                        .generate(), #"<?xml version="1.0" encoding="UTF-8"?><レシピ><手順>全ての材料を一緒にして混ぜます。</手順><手順>オーブンに入れて温度を180℃にして30分間焼きます。</手順></レシピ>"#)
+    func testDoNotSpecifyEndTag() {
+        let gen = MarkUp()
+        let meta = gen.meta.doNotSpecifyEndTag()
+        
+        let htmlString = meta(charset: "utf-8").toString()
+        XCTAssertEqual(htmlString, "<meta charset=\"utf-8\">")
     }
     
     func testHtml() {
-        XCTAssertEqual(MarkUp(doctype: #"<!DOCTYPE html>"#)
-                        .html[MarkUp()
-                                .head[MarkUp()
-                                        .meta[attributes: ["charset" : "UTF-8"]].doNotSpecifyEndTag()
-                                        .title[character: "HTML"]
-                                ]
-                                .body[MarkUp()
-                                        .p[character: "Body"]
-                                ]
-                        ][attributes: ["lang" : "ja"]]
-                        .generate(), #"<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>HTML</title></head><body><p>Body</p></body></html>"#)
+        let m = MarkUp()
+        
+        let htmlString = m[dynamicMember: "!DOCTYPE"](html: nil).doNotSpecifyEndTag().children {
+            m.html.children {
+                m.head.children {
+                    m.meta(charset: "UTF-8").doNotSpecifyEndTag()
+                    m.meta(name: "description",
+                           content: "Free Web tutorials").doNotSpecifyEndTag()
+                    m.meta(name: "keywords",
+                           content: "HTML, CSS, JavaScript").doNotSpecifyEndTag()
+                    m.meta(name: "author",
+                           content: "John Doe").doNotSpecifyEndTag()
+                }
+                m.body.children {
+                    m.p.children {
+                        "All meta information goes inside the head section."
+                    }
+                }
+            }
+        }
+        .toString()
+        
+        XCTAssertEqual(htmlString, """
+            <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="description" content="Free Web tutorials"><meta name="keywords" content="HTML, CSS, JavaScript"><meta name="author" content="John Doe"></head><body><p>All meta information goes inside the head section.</p></body></html>
+            """)
     }
     
-    static var allTests = [
-        ("testExample", testExample),
-        ("testAttributes", testAttributes),
-        ("testAddEndTag", testAddEndTag),
-        ("testXml", testXml),
-    ]
+    func testXml() {
+        let m = MarkUp()
+        
+        let htmlString = m.書籍目録.children {
+            m.書名.children {
+                "XML入門"
+            }
+            m.著者.children {
+                "筒井"
+            }
+            m.書名.children {
+                "続・XML入門"
+            }
+            m.著者.children {
+                "小松"
+            }
+        }
+        .toString()
+        
+        XCTAssertEqual(htmlString, """
+            <書籍目録><書名>XML入門</書名><著者>筒井</著者><書名>続・XML入門</書名><著者>小松</著者></書籍目録>
+            """)
+    }
+    
+    func testXmlRoot() {
+        let m = MarkUp()
+        
+        let htmlString = m[dynamicMember: "?xml"](version: "1.0",
+                                                  encoding: "UTF-8").doNotSpecifyEndTag(instead: "?").children {
+                                                    m.書籍(出版日: "2007-10-31").children {
+                                                        "これは書籍です.... "
+                                                    }
+                                                  }
+            .toString()
+        
+        XCTAssertEqual(htmlString, """
+            <?xml version="1.0" encoding="UTF-8"?><書籍 出版日="2007-10-31">これは書籍です.... </書籍>
+            """)
+    }
+    
+    func testHyphenedAttribute() {
+        let m = MarkUp()
+        
+        let htmlString = m.form.dynamicallyCall(withKeywordArguments: ["accept-charset": "UTF-8"]).toString()
+        
+        XCTAssertEqual(htmlString, """
+            <form accept-charset="UTF-8"></form>
+            """)
+    }
 }

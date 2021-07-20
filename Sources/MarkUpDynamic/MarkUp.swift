@@ -7,114 +7,91 @@
 
 import Foundation
 
-@dynamicMemberLookup
-public class MarkUp {
-    let tag: String
-    var attributes: [String: String?]?
-    var addEndTag = true
-    var inside: Inside
-    var queue:[MarkUp]
-    
-    public subscript(_ inside: MarkUp) -> MarkUp {
-        self.inside = .markUp(inside)
-        return self
-    }
-    
-    public subscript(attributes attributes: [String: String?]) -> MarkUp {
-        self.attributes = attributes
-        return self
-    }
-    
-    public subscript(character character: String) -> MarkUp {
-        self.inside = .character(character)
-        return self
-    }
-    
-    public func doNotSpecifyEndTag() -> MarkUp {
-        self.addEndTag = false
-        return self
-    }
-    
-    public subscript(dynamicMember member: String) -> MarkUp {
-        tagName(member)
-    }
-    
-    public func tagName(_ tagName: String) -> MarkUp {
-        queue.append(self)
-        return MarkUp(tag: tagName,queue: queue)
-    }
-    
-    public init(doctype:String) {
-        self.tag = ""
-        self.inside = .root(doctype)
-        self.queue = []
-    }
-    
-    public init() {
-        self.tag = ""
-        self.inside = .root("")
-        self.queue = []
-    }
-    
-    private init(tag: String, queue:[MarkUp]) {
-        self.tag = tag
-        self.inside = .character("")
-        self.queue = queue
-    }
-    
-    public func generate() -> String {
-        queue.append(self)
-        return queue.reduce("") { (result, markUp) -> String in
-            switch markUp.inside {
-            case .root(let docType):
-                return result + docType
-            case .markUp,.character:
-                if markUp.addEndTag {
-                    return result +  "<\(markUp.tag)\(markUp.attributes?.attributeString ?? "")>\(markUp.inside.generate())</\(markUp.tag)>"
-                } else {
-                    return result +  "<\(markUp.tag)\(markUp.attributes?.attributeString ?? "")>"
-                }
-            }
-        }
+/// Content that can be included in the element.
+public protocol Content {
+    /// Get marked up text.
+    /// - Returns: marked up text.
+    func toString() -> String
+}
+
+extension String: Content {
+    public func toString() -> String {
+        self
     }
 }
 
-private extension Dictionary where Key == String, Value == String? {
-    var attributeString: String {
-        reduce("", { (result, arg1) -> String in
+/// Element that support attributes added by dynamic callable
+@dynamicCallable
+public struct Element: Content {
+    internal init(tagName: String? = nil, addEndTag: Bool = true, elements: [Content] = [], attributes: KeyValuePairs<String, String?>? = nil, instead: String = "") {
+        self.tagName = tagName
+        self.addEndTag = addEndTag
+        self.elements = elements
+        self.attributes = attributes
+        self.instead = instead
+    }
+    
+    private let tagName: String?
+    private let addEndTag: Bool
+    private let elements: [Content]
+    private let attributes: KeyValuePairs<String, String?>?
+    private let instead: String
+    
+    public func toString() -> String {
+        let attributesString = attributes?.reduce("", { (result, arg1) -> String in
             let (key, value) = arg1
             if let value = value {
                 return result + " \(key)=\"\(value)\""
             } else {
                 return result + " \(key)"
             }
-        })
+        }) ?? ""
+        let content = elements.map { $0.toString() }.joined(separator: "")
+        if let tagName = tagName {
+            var drawString: String = ""
+            drawString += "<\(tagName)\(attributesString)\(instead)>\(content)"
+            if addEndTag {
+                drawString += "</\(tagName)>"
+            }
+            return drawString
+        } else {
+            return content
+        }
+    }
+    
+    /// Add children content
+    /// - Parameter content: children content
+    /// - Returns: Result that added content
+    public func children( @MarkUpBuilderBuilder content: () -> Content) -> Element {
+        Element(tagName: tagName, addEndTag: addEndTag, elements: [content()], attributes: attributes, instead: instead)
+    }
+    
+    public func dynamicallyCall(withKeywordArguments pairs: KeyValuePairs<String, String?>) -> Element {
+        Element(tagName: tagName, addEndTag: addEndTag, elements: elements, attributes: pairs, instead: instead)
+    }
+    
+    /// Remove end tag
+    /// - Parameter instead: Put a string in front of '>'
+    /// - Returns: Result that removed end tag
+    public func doNotSpecifyEndTag(instead: String = "") -> Element {
+        Element(tagName: tagName, addEndTag: false, elements: elements, attributes: attributes, instead: instead)
     }
 }
 
-enum Inside: CustomDebugStringConvertible {
-    var debugDescription: String {
-        switch self {
-        case .markUp(let markUp):
-            return "markUp:\(markUp.tag)"
-        case .character(let character):
-            return "character:\(character)"
-        case .root(let doctype):
-            return "root:\(doctype)"
-        }
-    }
-    case root(String)
-    case markUp(MarkUp)
-    case character(String)
+/// Mark up that support dynamic member.
+@dynamicMemberLookup
+public struct MarkUp {
+    public init() {}
     
-    func generate() -> String {
-        switch self {
-        case .markUp(let markUp):
-            return markUp.generate()
-        case .character(let character):
-            return character
-        case .root:
-            return ""
-        }
+    public subscript(dynamicMember member: String) -> Element {
+        Element(tagName: member)
+    }
+}
+
+
+@resultBuilder
+public struct MarkUpBuilderBuilder {
+    public static func buildBlock(_ components: Content...) -> Content {
+        Element(tagName: nil, elements: components)
     }
 }
