@@ -20,9 +20,15 @@ extension String: Content {
     }
 }
 
-/// Element that support attributes added by dynamic callable
+/// Element that can not add content.
 @dynamicCallable
-public struct Element: Content {
+public protocol VoidElement: Content {
+    func dynamicallyCall(withKeywordArguments pairs: KeyValuePairs<String, String?>) -> Self
+}
+
+/// Element that can add content.
+@dynamicCallable
+public struct Element: VoidElement {
     internal init(tagName: String? = nil, addEndTag: Bool = true, elements: [Content] = [], attributes: KeyValuePairs<String, String?>? = nil, instead: String = "") {
         self.tagName = tagName
         self.addEndTag = addEndTag
@@ -62,7 +68,7 @@ public struct Element: Content {
     /// Add children content
     /// - Parameter content: children content
     /// - Returns: Result that added content
-    public func children( @MarkUpBuilderBuilder content: () -> Content) -> Element {
+    public func children( @MarkUpBuilderBuilder content: () -> Content) -> VoidElement {
         Element(tagName: tagName, addEndTag: addEndTag, elements: [content()], attributes: attributes, instead: instead)
     }
     
@@ -73,7 +79,7 @@ public struct Element: Content {
     /// Remove end tag
     /// - Parameter instead: Put a string in front of '>'
     /// - Returns: Result that removed end tag
-    public func doNotSpecifyEndTag(instead: String = "") -> Element {
+    public func doNotSpecifyEndTag(instead: String = "") -> VoidElement {
         Element(tagName: tagName, addEndTag: false, elements: elements, attributes: attributes, instead: instead)
     }
 }
@@ -85,6 +91,10 @@ public struct MarkUp {
     
     public subscript(dynamicMember member: String) -> Element {
         Element(tagName: member)
+    }
+    
+    public func children( @MarkUpBuilderBuilder content: () -> Content) -> VoidElement {
+        Element(tagName: nil, elements: [content()])
     }
 }
 
