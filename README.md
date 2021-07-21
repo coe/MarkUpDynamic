@@ -44,7 +44,8 @@ let htmlString = m.html.children {
 
 ```swift
 let m = MarkUp()
-let htmlString = m[dynamicMember: "!DOCTYPE"](html: nil).doNotSpecifyEndTag().children {
+let htmlString = m.children {
+    m[dynamicMember: "!DOCTYPE"](html: nil).doNotSpecifyEndTag()
     m.html.children {
         m.head.children {
             m.meta(charset: "UTF-8").doNotSpecifyEndTag()
@@ -116,17 +117,19 @@ let htmlString = m.書籍目録.children {
 ```swift
 let m = MarkUp()
 
-let htmlString = m[dynamicMember: "?xml"](version: "1.0",
-                                          encoding: "UTF-8").doNotSpecifyEndTag(instead: "?").children {
-                                            m.書籍(出版日: "2007-10-31").children {
-                                                "これは書籍です.... "
-                                            }
-                                          }
-    .toString()
+let htmlString = m.children {
+    m[dynamicMember: "?xml"](version: "1.0",
+                             encoding: "UTF-8").doNotSpecifyEndTag(instead: "?")
+    m.書籍(出版日: "2007-10-31").children {
+        "これは書籍です.... "
+    }
+}
+.toString()
 ```
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?><書籍 出版日="2007-10-31">これは書籍です.... </書籍>
+<?xml version="1.0" encoding="UTF-8"?>
+<書籍 出版日="2007-10-31">これは書籍です.... </書籍>
 ```
 
 
